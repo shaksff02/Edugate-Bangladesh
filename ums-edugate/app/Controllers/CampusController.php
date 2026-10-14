@@ -50,7 +50,7 @@ final class CampusController
             'status'      => $status,
             'universityId'=> $univId,
             'universities'=> $this->repo->activeUniversities(),
-            'canEdit'     => Auth::can(Auth::role(), 'create'),
+            'canEdit'     => Rbac::can(Auth::role(), 'create'),
         ]);
     }
 
@@ -99,7 +99,7 @@ final class CampusController
                 ['label' => 'Campuses', 'url' => '/campuses'],
                 ['label' => (string) $campus['name']],
             ],
-            'canEdit'     => Auth::can(Auth::role(), 'create'),
+            'canEdit'     => Rbac::can(Auth::role(), 'create'),
         ]);
     }
 

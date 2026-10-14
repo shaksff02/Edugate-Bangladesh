@@ -54,7 +54,7 @@ final class RoundController
             'intakeId'     => $intakeId,
             'universities' => $this->repo->activeUniversities(),
             'intakes'      => $this->repo->activeIntakes($univId),
-            'canEdit'      => Auth::can(Auth::role(), 'create'),
+            'canEdit'      => Rbac::can(Auth::role(), 'create'),
         ]);
     }
 
@@ -120,7 +120,7 @@ final class RoundController
                 ['label' => 'Rounds', 'url' => '/rounds'],
                 ['label' => (string) $round['name']],
             ],
-            'canEdit'     => Auth::can(Auth::role(), 'create'),
+            'canEdit'     => Rbac::can(Auth::role(), 'create'),
         ]);
     }
 

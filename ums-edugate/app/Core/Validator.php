@@ -10,6 +10,16 @@
 
 declare(strict_types=1);
 
+// mbstring is optional; provide byte-safe fallbacks so validation never crashes.
+if (!function_exists('mb_strlen')) {
+    function mb_strlen(string $s, ?string $enc = null): int { return strlen($s); }
+}
+if (!function_exists('mb_substr')) {
+    function mb_substr(string $s, int $start, ?int $len = null, ?string $enc = null): string {
+        return $len === null ? substr($s, $start) : substr($s, $start, $len);
+    }
+}
+
 final class Validator
 {
     /** @var array<string,string> field => first error message */
@@ -266,6 +276,75 @@ final class Validator
     {
         $v = strtolower($this->raw($key));
         $this->data[$key] = in_array($v, ['1', 'on', 'true'], true) ? 1 : 0;
+        return $this;
+    }
+
+    /**
+     * Decimal number with at most 2 fraction digits, bounded (e.g. GPA / test score).
+     * Empty -> null unless required. Stored as a normalized string ("3.75").
+     */
+    public function decimal(string $key, string $label, float $min, float $max, bool $requiredField = false): self
+    {
+        $v = $this->raw($key);
+        if ($v === '') {
+            if ($requiredField) {
+                $this->fail($key, "{$label} is required.");
+            } else {
+                $this->data[$key] = null;
+            }
+            return $this;
+        }
+        if (!preg_match('/^\d{1,3}(\.\d{1,2})?$/', $v)) {
+            $this->fail($key, "{$label} must be a number with up to two decimals (e.g. 3.75).");
+            return $this;
+        }
+        $n = (float) $v;
+        if ($n < $min || $n > $max) {
+            $this->fail($key, "{$label} must be between {$min} and {$max}.");
+            return $this;
+        }
+        $this->data[$key] = number_format($n, 2, '.', '');
+        return $this;
+    }
+
+    /** Integer percentage bounded 0–100 (e.g. minimum percentage requirement). */
+    public function percent(string $key, string $label, bool $requiredField = false): self
+    {
+        $v = $this->raw($key);
+        if ($v === '') {
+            if ($requiredField) {
+                $this->fail($key, "{$label} is required.");
+            } else {
+                $this->data[$key] = null;
+            }
+            return $this;
+        }
+        if (!preg_match('/^\d{1,3}(\.\d{1,2})?$/', $v)) {
+            $this->fail($key, "{$label} must be a number with up to two decimals.");
+            return $this;
+        }
+        $n = (float) $v;
+        if ($n < 0 || $n > 100) {
+            $this->fail($key, "{$label} must be between 0 and 100.");
+            return $this;
+        }
+        $this->data[$key] = number_format($n, 2, '.', '');
+        return $this;
+    }
+
+    /** Multi-line text stored as a single column (textarea input). Optional. */
+    public function textarea(string $key, string $label, int $max = 5000): self
+    {
+        $v = $this->raw($key);
+        if ($v === '') {
+            $this->data[$key] = null;
+            return $this;
+        }
+        if (mb_strlen($v) > $max) {
+            $this->fail($key, "{$label} must be at most {$max} characters.");
+            return $this;
+        }
+        $this->data[$key] = $v;
         return $this;
     }
 
