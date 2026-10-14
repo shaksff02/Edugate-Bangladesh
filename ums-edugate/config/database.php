@@ -59,7 +59,7 @@ final class Database
             // Log detail locally, expose only a generic message to callers.
             error_log('[UMS EduGate] DB connection failed: ' . $e->getMessage());
             throw new RuntimeException(
-                'Database connection failed. Check that MySQL/MariaDB is running and ' .
+                'Database connection failed. Check that MySQL is running and ' .
                 'that config/config.local.php contains valid credentials.',
                 0,
                 $e
@@ -80,7 +80,7 @@ final class Database
             $version = $pdo->query('SELECT VERSION()')->fetchColumn();
             return [
                 'ok'      => true,
-                'server'  => 'MySQL/MariaDB reachable',
+                'server'  => 'MySQL reachable',
                 'version' => (string) $version,
                 'ms'      => round((microtime(true) - $started) * 1000, 1),
             ];
@@ -88,7 +88,7 @@ final class Database
             error_log('[UMS EduGate] DB test failed: ' . $e->getMessage());
             return [
                 'ok'     => false,
-                'server' => 'MySQL/MariaDB NOT reachable',
+                'server' => 'MySQL NOT reachable',
                 'error'  => 'Connection failed (details logged to PHP error log; check config/config.local.php).',
             ];
         }

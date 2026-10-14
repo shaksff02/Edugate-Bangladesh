@@ -12,3 +12,4 @@ Decisions taken where the PRD left room. Do not silently change these.
 | D-06 | 2026-10-14 | Staleness threshold default = 180 days placed in config (`verification.stale_days`) | PRD §5 default unless user chooses otherwise |
 | D-07 | 2026-10-14 | DB name `ums_edugate`, charset `utf8mb4`, PDO with `ERRMODE_EXCEPTION`, `EMULATE_PREPARES=false` | PRD rule 10 (real prepared statements); safe Unicode storage |
 | D-08 | 2026-10-14 | `Database::testConnection()` connects without selecting a database | Phase 1 acceptance needs clear success/failure handling before the schema exists (Phase 2 creates it) |
+| D-09 | 2026-10-14 | Target database engine is official Oracle **MySQL 8.0+** (Community Server). MariaDB is explicitly NOT used or supported. All docs/messages updated accordingly. | User directive: "not mariadb, i want mysql". Verified locally on MySQL 8.0.46; PDO driver remains `mysql` so no code change was required beyond wording. |

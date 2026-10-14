@@ -17,6 +17,7 @@ define('BASE_PATH', dirname(__DIR__));
 require_once BASE_PATH . '/config/database.php';
 require_once BASE_PATH . '/app/Views/layouts/main.php'; // view renderer + e()
 require_once BASE_PATH . '/app/Controllers/HomeController.php';
+require_once BASE_PATH . '/app/Controllers/AuthController.php';
 
 $config = Database::config();
 date_default_timezone_set($config['app']['timezone'] ?? 'UTC');
