@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>University Management System</title>
+<style>
+:root{
+  --navy:#0F2A47; --navy2:#163A5F; --blue:#1D4ED8; --blue-l:#DBEAFE; --teal:#0F766E; --purple:#6D28D9; --amber:#B45309; --rose:#BE123C; --green:#15803D;
+  --page:#EEF2F7; --card:#fff; --line:#CBD5E1; --line-l:#E2E8F0; --text:#0F172A; --muted:#64748B; --head:#F1F5F9; --zebra:#F8FAFC;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --page:#0B1220; --card:#111A2C; --line:#26334A; --line-l:#1E2A40; --text:#E5EAF3; --muted:#8FA0BA; --head:#16223A; --zebra:#0F1829; --blue-l:#1E3A8A55; }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--text);font:14px/1.45 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,select{font:inherit;color:inherit}
+.hidden{display:none!important}
+
+/* login */
+#login{min-height:100vh;display:grid;place-items:center;padding:16px}
+.login-card{background:var(--card);border:1px solid var(--line-l);border-radius:14px;padding:28px;width:100%;max-width:380px;box-shadow:0 8px 30px #0f2a4720}
+.login-card h1{margin:0 0 4px;font-size:20px;color:var(--navy)}
+@media (prefers-color-scheme: dark){.login-card h1{color:#fff}}
+.login-card p{margin:0 0 18px;color:var(--muted)}
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.field label{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+input,select{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%}
+input:focus,select:focus{outline:2px solid var(--blue);outline-offset:-1px}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer}
+.btn:hover{filter:brightness(1.1)} .btn:disabled{opacity:.6;cursor:wait}
+.btn.ghost{background:transparent;color:var(--blue);border:1px solid var(--line)}
+.err{color:var(--rose);margin:8px 0 0;min-height:1.2em;font-size:13px}
+
+/* shell */
+header{background:var(--navy);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+header .brand{font-weight:800;letter-spacing:.03em}
+header .sub{color:#BFD3EA;font-size:12px}
+header .sp{flex:1}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:transparent;border:0;color:#BFD3EA;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+nav button.on{background:#ffffff1f;color:#fff}
+nav button:hover{color:#fff}
+main{max-width:1200px;margin:0 auto;padding:20px 16px 60px}
+h2{margin:0 0 14px;font-size:18px}
+.card{background:var(--card);border:1px solid var(--line-l);border-radius:12px;padding:16px;margin-bottom:16px}
+.card h3{margin:0 0 10px;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+
+/* kpi */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.kpi{background:var(--card);border:1px solid var(--line-l);border-top:3px solid var(--c,var(--blue));border-radius:12px;padding:12px 14px}
+.kpi .l{font-size:10.5px;font-weight:700;letter-spacing:.05em;color:var(--muted)}
+.kpi .v{font-size:28px;font-weight:800;color:var(--c,var(--blue));line-height:1.2}
+.kpi .d{font-size:11px;color:var(--muted)}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line-l);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th{background:var(--head);text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:8px 10px;white-space:nowrap}
+td{padding:8px 10px;border-top:1px solid var(--line-l);vertical-align:top}
+tbody tr:nth-child(even){background:var(--zebra)}
+tr.click{cursor:pointer} tr.click:hover{background:var(--blue-l)}
+.empty{color:var(--muted);padding:14px;text-align:center}
+.chip{display:inline-block;border-radius:999px;padding:1px 9px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.s-Verified{background:#DCFCE7;color:#166534}.s-Pending{background:#FEF9C3;color:#854D0E}.s-Need{background:#FFEDD5;color:#9A3412}.s-Expired{background:#FEE2E2;color:#991B1B}
+.d-red{background:#FEE2E2;color:#991B1B}.d-or{background:#FFEDD5;color:#9A3412}.d-ye{background:#FEF9C3;color:#854D0E}.d-gr{background:#DCFCE7;color:#166534}.d-gy{background:#E5E7EB;color:#374151}
+.sample{background:#EDE9FE;color:#5B21B6;margin-left:6px}
+.muted{color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid2>*,.card,main{min-width:0}
+header{padding:12px 16px}
+@media(max-width:820px){.grid2{grid-template-columns:1fr}}
+.filters{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--line-l);margin:6px 0 10px}
+.bar i{display:block;height:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend b{color:var(--text)}
+.uhead{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.uhead h2{margin:0}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 20px;margin-top:10px}
+.kv div span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.05em;color:var(--muted);text-transform:uppercase}
+a{color:var(--blue)}
+.toolbar{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px}
+.toolbar .field{margin:0;min-width:180px;flex:1}
+.loading{padding:40px;text-align:center;color:var(--muted)}
+@media print{
+  header,nav,.toolbar,.noprint{display:none!important}
+  body{background:#fff;color:#000} .card,.kpi{border-color:#999;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <form class="login-card" id="loginForm" autocomplete="off">
+    <h1>University Management System</h1>
+    <p>Staff access only. Enter the staff password.</p>
+    <div class="field"><label for="pw">Password</label><input id="pw" type="password" autocomplete="current-password" required autofocus></div>
+    <button class="btn" id="loginBtn" style="width:100%">Log in</button>
+    <div class="err" id="loginErr" role="alert"></div>
+  </form>
+</section>
+
+<div id="app" class="hidden">
+  <header>
+    <div><div class="brand" id="hTitle">UNIVERSITY MANAGEMENT SYSTEM</div><div class="sub" id="hSub"></div></div>
+    <div class="sp"></div>
+    <nav>
+      <button data-p="home" class="on">Home</button>
+      <button data-p="uni">University</button>
+      <button data-p="prog">Programs</button>
+    </nav>
+    <button class="btn ghost" id="refresh" title="Reload latest data from the sheet" style="color:#fff;border-color:#ffffff55">Refresh data</button>
+    <button class="btn ghost" id="logout" style="color:#fff;border-color:#ffffff55">Log out</button>
+  </header>
+  <main id="view"><div class="loading">Loading…</div></main>
+</div>
+
+<script src="config.js"></script>
+<script>
+'use strict';
+/* ------------------------------ helpers ---------------------------------- */
+var $ = function (s, r) { return (r || document).querySelector(s); };
+var esc = function (v) { return String(v === null || v === undefined ? '' : v).replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+var blank = function (v) { return v === null || v === undefined || String(v).trim() === ''; };
+var dash = function (v) { return blank(v) ? '<span class="muted">—</span>' : esc(v); };
+var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fd(s) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); return m ? (+m[3]) + ' ' + MON[+m[2] - 1] + ' ' + m[1] : ''; }
+function fn(n) { if (blank(n)) return ''; var x = Number(n); return isNaN(x) ? String(n) : (Math.round(x * 100) / 100).toLocaleString('en-US'); }
+function money(a, cur, per) { return blank(a) ? '' : fn(a) + (cur ? ' ' + cur : '') + (per ? ' / ' + per.replace(/^Per /, '').toLowerCase() : ''); }
+function url(u) { return /^https?:\/\//i.test(u || '') ? '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u.replace(/^https?:\/\//, '').replace(/\/$/, '')) + '</a>' : dash(u); }
+function statusChip(s) { var k = String(s || '').split(' ')[0]; return s ? '<span class="chip s-' + esc(k) + '">' + esc(s) + '</span>' : ''; }
+function sampleChip(o) { return o ? '<span class="chip sample">SAMPLE</span>' : ''; }
+function dayChip(d, text) {
+  var c = d < 0 ? 'd-gy' : d <= 7 ? 'd-red' : d <= 14 ? 'd-or' : d <= 30 ? 'd-ye' : 'd-gr';
+  return '<span class="chip ' + c + '">' + esc(text || (d < 0 ? Math.abs(d) + ' d ago' : d === 0 ? 'Today' : d + ' d')) + '</span>';
+}
+function table(cols, rows, opts) {
+  opts = opts || {};
+  if (!rows.length) return '<div class="empty">' + esc(opts.empty || 'No records.') + '</div>';
+  return '<div class="tw"><table><thead><tr>' + cols.map(function (c) { return '<th>' + esc(c.h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    rows.map(function (r, i) { return '<tr' + (opts.click ? ' class="click" data-i="' + i + '"' : '') + '>' + cols.map(function (c) { return '<td>' + c.v(r) + '</td>'; }).join('') + '</tr>'; }).join('') +
+    '</tbody></table></div>';
+}
+function opts(arr, sel, first) { return (first !== undefined ? '<option value="">' + esc(first) + '</option>' : '') + arr.map(function (x) { var v = typeof x === 'object' ? x.v : x, l = typeof x === 'object' ? x.l : x; return '<option value="' + esc(v) + '"' + (String(v) === String(sel) ? ' selected' : '') + '>' + esc(l) + '</option>'; }).join(''); }
+
+/* ------------------------------ API -------------------------------------- */
+var TOKEN = null;
+try { TOKEN = sessionStorage.getItem('ums_token'); } catch (e) {}
+function saveToken(t) { TOKEN = t; try { t ? sessionStorage.setItem('ums_token', t) : sessionStorage.removeItem('ums_token'); } catch (e) {} }
+
+async function api(action, payload) {
+  if (!window.UMS_API_URL || /PASTE_YOUR/.test(window.UMS_API_URL)) throw new Error('config.js: API URL is not set yet.');
+  var body = Object.assign({ action: action, token: TOKEN }, payload || {});
+  var res;
+  try {
+    // No Content-Type header → "simple" request, no CORS preflight (Apps Script requirement).
+    res = await fetch(window.UMS_API_URL, { method: 'POST', body: JSON.stringify(body), redirect: 'follow' });
+  } catch (e) { throw new Error('Cannot reach the server. Check your internet connection.'); }
+  var j;
+  try { j = await res.json(); } catch (e) { throw new Error('Server returned an unexpected answer.'); }
+  if (j.auth === false) { saveToken(null); showLogin(); throw new Error(j.error || 'Please log in again.'); }
+  if (!j.ok) throw new Error(j.error || 'Server error.');
+  return j;
+}
+
+/* ------------------------------ state ------------------------------------ */
+var B = null;               // bootstrap data
+var page = 'home';
+var uniState = { country: '', id: '', degree: '', intake: '', data: null };
+var progState = { f: {}, res: null };
+
+/* ------------------------------ login ------------------------------------ */
+function showLogin() { $('#app').classList.add('hidden'); $('#login').classList.remove('hidden'); $('#pw').value = ''; }
+$('#loginForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  var b = $('#loginBtn'), er = $('#loginErr'); er.textContent = ''; b.disabled = true; b.textContent = 'Checking…';
+  try {
+    var j = await api('login', { password: $('#pw').value });
+    saveToken(j.token); await start(j.data);
+  } catch (x) { er.textContent = x.message; }
+  b.disabled = false; b.textContent = 'Log in';
+});
+$('#logout').addEventListener('click', function () { saveToken(null); B = null; try { sessionStorage.removeItem('ums_boot'); } catch (e) {} showLogin(); });
+
+function cacheBoot(d) { try { sessionStorage.setItem('ums_boot', JSON.stringify(d)); } catch (e) {} }
+function readBoot() { try { return JSON.parse(sessionStorage.getItem('ums_boot')); } catch (e) { return null; } }
+function applyBoot(d) {
+  B = d; cacheBoot(d);
+  $('#hTitle').textContent = B.title; $('#hSub').textContent = B.consultancy + (B.subtitle ? ' · ' + B.subtitle : '');
+  document.title = B.title;
+}
+async function start(first) {
+  $('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
+  var shown = false;
+  if (first) { applyBoot(first); go(page); shown = true; }
+  else {
+    var old = readBoot();                       // show the last data instantly while fresh data loads
+    if (old) { B = old; applyBoot(old); go(page); shown = true; }
+    else $('#view').innerHTML = '<div class="loading">Loading data… (first load can take a few seconds)</div>';
+    try {
+      var j = await api('bootstrap'); applyBoot(j.data);
+      if (!shown || page === 'home') go(page);
+      else if (page === 'uni' || page === 'prog') { /* keep the user's current view */ }
+    } catch (x) {
+      if (!$('#login').classList.contains('hidden')) return;
+      if (!shown) $('#view').innerHTML = '<div class="card err">' + esc(x.message) + '</div>';
+    }
+  }
+}
+$('#refresh').addEventListener('click', async function () {
+  var b = this; b.disabled = true; b.textContent = 'Refreshing…';
+  try {
+    var j = await api('bootstrap', { refresh: true }); applyBoot(j.data);
+    uniState.data = null; progState.res = null; go(page);
+  } catch (x) { alert(x.message); }
+  b.disabled = false; b.textContent = 'Refresh data';
+});
+
+document.querySelectorAll('nav button').forEach(function (b) { b.addEventListener('click', function () { go(b.dataset.p); }); });
+function go(p) {
+  page = p;
+  document.querySelectorAll('nav button').forEach(function (b) { b.classList.toggle('on', b.dataset.p === p); });
+  if (p === 'home') renderHome(); else if (p === 'uni') renderUni(); else renderProg();
+  window.scrollTo(0, 0);
+}
+
+/* ------------------------------ HOME ------------------------------------- */
+function renderHome() {
+  var k = B.kpi, q = B.quality, tot = (q['Verified'] + q['Pending Verification'] + q['Need Update'] + q['Expired']) || 1;
+  var K = [
+    ['TOTAL COUNTRIES', k.countries, 'Active destination countries', 'var(--blue)'],
+    ['TOTAL UNIVERSITIES', k.universities, 'Universities in database', 'var(--teal)'],
+    ['TOTAL PROGRAMS', k.programs, 'All degree levels', 'var(--purple)'],
+    ['SCHOLARSHIPS', k.scholarships, 'Scholarship schemes', 'var(--amber)'],
+    ["MASTER'S PROGRAMS", k.masters, 'Postgraduate', 'var(--blue)'],
+    ["BACHELOR'S PROGRAMS", k.bachelors, 'Undergraduate', 'var(--teal)'],
+    ['UPCOMING DEADLINES', k.upcoming, 'Application rounds still open', 'var(--rose)'],
+    ['RECORDS NEEDING UPDATE', k.needUpdate, 'Pending · Need Update · Expired', '#9A3412']
+  ];
+  var seg = [['Verified', '#16A34A'], ['Pending Verification', '#EAB308'], ['Need Update', '#F97316'], ['Expired', '#DC2626']];
+  var html = '<h2>Home</h2><div class="kpis">' + K.map(function (x) { return '<div class="kpi" style="--c:' + x[3] + '"><div class="l">' + x[0] + '</div><div class="v">' + fn(x[1]) + '</div><div class="d">' + x[2] + '</div></div>'; }).join('') + '</div>';
+  html += '<div class="grid2"><div class="card"><h3>Country summary</h3>' + table([
+    { h: 'Country', v: function (r) { return '<b>' + esc(r.country) + '</b>'; } },
+    { h: 'Currency', v: function (r) { return dash(r.currency); } },
+    { h: 'Universities', v: function (r) { return fn(r.universities); } },
+    { h: 'Programs', v: function (r) { return fn(r.programs); } },
+    { h: 'Scholarships', v: function (r) { return fn(r.scholarships); } }
+  ], B.countrySummary, { empty: 'No countries yet.' }) + '</div>' +
+  '<div class="card"><h3>Data quality</h3><div class="bar">' + seg.map(function (s) { return '<i style="width:' + (q[s[0]] / tot * 100) + '%;background:' + s[1] + '"></i>'; }).join('') + '</div>' +
+  '<div class="legend">' + seg.map(function (s) { return '<span><i style="display:inline-block;width:10px;height:10px;border-radius:3px;background:' + s[1] + ';margin-right:5px"></i>' + s[0] + ' <b>' + q[s[0]] + '</b></span>'; }).join('') + '</div></div></div>';
+  html += '<div class="card"><h3>Upcoming application deadlines</h3>' + table([
+    { h: 'Deadline', v: function (r) { return dayChip(r.days); } },
+    { h: 'Closes', v: function (r) { return esc(fd(r.end)); } },
+    { h: 'University', v: function (r) { return esc(r.university) + sampleChip(r.sample); } },
+    { h: 'Country', v: function (r) { return esc(r.country); } },
+    { h: 'Intake', v: function (r) { return esc(r.intake); } },
+    { h: 'Round', v: function (r) { return esc(r.round); } },
+    { h: 'Opens', v: function (r) { return esc(fd(r.start)); } }
+  ], B.deadlines, { empty: 'No upcoming deadlines.' }) + '</div>';
+  $('#view').innerHTML = html;
+}
+
+/* ------------------------------ UNIVERSITY ------------------------------- */
+function renderUni() {
+  var s = uniState;
+  var list = B.universities.filter(function (u) { return !s.country || u.country === s.country; });
+  var html = '<h2>University</h2><div class="card toolbar">' +
+    '<div class="field"><label>Country</label><select id="uc">' + opts(B.countries.map(function (c) { return c.name; }), s.country, 'All countries') + '</select></div>' +
+    '<div class="field" style="flex:2"><label>University</label><select id="uu">' + opts(list.map(function (u) { return { v: u.id, l: u.name + ' — ' + u.city }; }), s.id, 'Select a university…') + '</select></div>' +
+    '<div class="field"><label>Degree</label><select id="ud">' + opts(B.lists.DEGREE, s.degree, 'All degrees') + '</select></div>' +
+    '<button class="btn ghost noprint" id="uprint">Print</button></div><div id="uout"></div>';
+  $('#view').innerHTML = html;
+  $('#uc').onchange = function () { s.country = this.value; s.id = ''; s.data = null; renderUni(); };
+  $('#uu').onchange = function () { s.id = this.value; loadUni(); };
+  $('#ud').onchange = function () { s.degree = this.value; if (s.id) loadUni(); };
+  $('#uprint').onclick = function () { window.print(); };
+  if (s.id && s.data) drawUni(); else if (s.id) loadUni(); else $('#uout').innerHTML = '<div class="card empty">Choose a university to see its full profile.</div>';
+}
+async function loadUni() {
+  var s = uniState; if (!s.id) { s.data = null; return renderUni(); }
+  $('#uout').innerHTML = '<div class="loading">Loading profile…</div>';
+  try { s.data = (await api('university', { id: s.id, filters: { degree: s.degree } })).data; drawUni(); }
+  catch (x) { if (page === 'uni') $('#uout').innerHTML = '<div class="card err">' + esc(x.message) + '</div>'; }
+}
+function scope(r) { return (blank(r.programId) || String(r.programId).toUpperCase() === 'ALL') ? 'All ' + (blank(r.degree) || r.degree === 'All' ? 'programs' : r.degree + ' programs') : esc(r.program || r.programId); }
+function drawUni() {
+  var d = uniState.data, u = d.u, o = '';
+  o += '<div class="card"><div class="uhead"><div><h2>' + esc(u.name) + sampleChip(String(u.dataFlag || '').indexOf('SAMPLE') >= 0) + '</h2><div class="muted">' + esc(u.city) + ', ' + esc(u.country) + '</div></div><div style="margin-left:auto">' + statusChip(u.status) + '</div></div>' +
+    '<div class="kv"><div><span>Type</span>' + dash(u.type) + '</div><div><span>Ranking</span>' + dash(u.ranking) + '</div><div><span>Accreditation</span>' + dash(u.accreditation) + '</div>' +
+    '<div><span>Website</span>' + url(u.website) + '</div><div><span>International site</span>' + url(u.intlWebsite) + '</div><div><span>Last checked</span>' + dash(fd(u.lastChecked)) + '</div></div>' +
+    (u.notes ? '<p class="muted" style="margin-bottom:0">' + esc(u.notes) + '</p>' : '') + '</div>';
+
+  o += sec('Programs', table([
+    { h: 'Program', v: function (p) { return '<b>' + esc(p.program) + '</b>' + (p.major && p.major !== p.program ? '<div class="muted">' + esc(p.major) + '</div>' : ''); } },
+    { h: 'Degree', v: function (p) { return dash(p.degree); } }, { h: 'Faculty', v: function (p) { return dash(p.faculty); } },
+    { h: 'Duration', v: function (p) { return dash(p.duration); } }, { h: 'Language', v: function (p) { return dash(p.language); } },
+    { h: 'Intakes', v: function (p) { return dash(p.intakes); } },
+    { h: 'Tuition', v: function (p) { return p._tuition && !blank(p._tuition.amount) ? esc(money(p._tuition.amount, p._tuition.currency, p._tuition.period)) : dash(''); } },
+    { h: 'Min GPA', v: function (p) { return p._acad && !blank(p._acad.minGpa) ? esc(p._acad.minGpa + (p._acad.gpaScale ? ' / ' + p._acad.gpaScale : '')) : dash(''); } },
+    { h: 'Status', v: function (p) { return statusChip(p.status); } }
+  ], d.programs, { empty: 'No programs match.' }));
+
+  var intakeOf = {}; d.intakes.forEach(function (i) { intakeOf[i.id] = i; });
+  o += sec('Intakes & application rounds', table([
+    { h: 'Intake', v: function (r) { return '<b>' + esc(r.intake) + '</b>'; } }, { h: 'Round', v: function (r) { return esc(r.round); } },
+    { h: 'Opens', v: function (r) { return dash(fd(r.appStart)); } }, { h: 'Closes', v: function (r) { return dash(fd(r.appEnd)); } },
+    { h: 'Interview', v: function (r) { return dash(fd(r.interviewStart) + (r.interviewEnd ? ' – ' + fd(r.interviewEnd) : '')); } },
+    { h: 'Result', v: function (r) { return dash(fd(r.result)); } }, { h: 'Deposit', v: function (r) { return dash(fd(r.depositDeadline)); } },
+    { h: 'Enrol by', v: function (r) { return dash(fd(r.enrollDeadline)); } }
+  ], d.rounds, { empty: 'No application rounds recorded.' }) +
+    (d.intakesWithoutRounds.length ? '<p class="muted">Intakes without rounds: ' + esc(d.intakesWithoutRounds.map(function (i) { return i.intake; }).join(', ')) + '</p>' : ''));
+
+  o += sec('Fees', table([
+    { h: 'Applies to', v: function (r) { return scope(r); } }, { h: 'Fee', v: function (r) { return esc(r.feeType); } },
+    { h: 'Amount', v: function (r) { return '<b>' + esc(fn(r.amount)) + '</b> ' + esc(r.currency); } }, { h: 'Period', v: function (r) { return dash(r.period); } }, { h: 'Notes', v: function (r) { return dash(r.notes); } }
+  ], d.fees));
+  o += sec('Language requirements', table([
+    { h: 'Applies to', v: function (r) { return scope(r); } }, { h: 'Test', v: function (r) { return esc(r.test); } },
+    { h: 'Min score', v: function (r) { return '<b>' + dash(r.minScore) + '</b>'; } }, { h: 'Sub-scores', v: function (r) { return dash(r.subScore); } }, { h: 'Waiver', v: function (r) { return dash(r.waiver); } }
+  ], d.lang));
+  o += sec('Academic requirements', table([
+    { h: 'Applies to', v: function (r) { return scope(r); } }, { h: 'Min GPA', v: function (r) { return dash(blank(r.minGpa) ? '' : r.minGpa + (r.gpaScale ? ' / ' + r.gpaScale : '')); } },
+    { h: 'Min %', v: function (r) { return dash(r.minPercent); } }, { h: 'Previous degree', v: function (r) { return dash(r.prevDegree); } },
+    { h: 'Background', v: function (r) { return dash(r.background); } }, { h: 'Work exp.', v: function (r) { return dash(r.workExp); } },
+    { h: 'Exam', v: function (r) { return dash(r.entranceExam); } }, { h: 'Other', v: function (r) { return dash(r.other); } }
+  ], d.acad));
+  var tiersOf = {}; d.tiers.forEach(function (t) { (tiersOf[t.schId] = tiersOf[t.schId] || []).push(t); });
+  o += sec('Scholarships', table([
+    { h: 'Scholarship', v: function (r) { return '<b>' + esc(r.name) + '</b>' + (tiersOf[r.id] ? '<div class="muted">' + tiersOf[r.id].map(function (t) {
+        var req = [t.minGpa && 'GPA ' + t.minGpa, t.ielts && 'IELTS ' + t.ielts, t.toefl && 'TOEFL ' + t.toefl, t.pte && 'PTE ' + t.pte, t.topik && 'TOPIK ' + t.topik, t.otherTest && t.otherTest + ' ' + t.otherScore].filter(Boolean).join(', ');
+        return esc(t.tier) + ': ' + esc(req) + ' → ' + (t.percent ? esc(t.percent) + '%' : esc(money(t.amount, t.currency))); }).join('<br>') + '</div>' : ''); } },
+    { h: 'Applies to', v: function (r) { return scope(r); } }, { h: 'Award', v: function (r) { return esc(r.schType) + '<div class="muted">' + esc(r.mode) + '</div>'; } },
+    { h: 'Value', v: function (r) { return r.percent ? esc(r.percent) + '%' : dash(money(r.amount, r.currency)); } },
+    { h: 'Eligibility', v: function (r) { return dash(r.eligibility); } }, { h: 'Duration', v: function (r) { return dash(r.duration); } }, { h: 'Renewal', v: function (r) { return dash(r.renewal); } }
+  ], d.schs));
+  o += sec('Documents', table([
+    { h: 'Document', v: function (r) { return '<b>' + esc(r.document) + '</b>'; } }, { h: 'Level', v: function (r) { return esc(r.level); } },
+    { h: 'Applies to', v: function (r) { return scope(r); } }, { h: 'Specification', v: function (r) { return dash(r.spec); } }
+  ], d.docs));
+  o += sec('Country-specific requirements', table([
+    { h: 'Category', v: function (r) { return esc(r.category); } }, { h: 'Requirement', v: function (r) { return '<b>' + esc(r.requirement) + '</b>'; } },
+    { h: 'Details', v: function (r) { return dash(r.details); } }, { h: 'Mandatory', v: function (r) { return esc(r.mandatory); } }
+  ], d.csr));
+  o += sec('Visa', table([
+    { h: 'Visa', v: function (r) { return '<b>' + esc(r.visaType) + '</b>'; } }, { h: 'Financial proof', v: function (r) { return dash(r.financial); } },
+    { h: 'Processing', v: function (r) { return dash(r.processing); } }, { h: 'Work rights', v: function (r) { return dash(r.workRights); } }, { h: 'Official link', v: function (r) { return url(r.url); } }
+  ], d.visa));
+  o += sec('Campuses', table([
+    { h: 'Campus', v: function (r) { return '<b>' + esc(r.campus) + '</b>'; } }, { h: 'City', v: function (r) { return dash(r.city); } }, { h: 'Address', v: function (r) { return dash(r.address); } }
+  ], d.campuses));
+  o += sec('Sources', table([
+    { h: 'Type', v: function (r) { return esc(r.sourceType); } }, { h: 'Title', v: function (r) { return dash(r.title); } }, { h: 'Link', v: function (r) { return url(r.url); } },
+    { h: 'Checked', v: function (r) { return dash(fd(r.checkedOn)); } }, { h: 'By', v: function (r) { return dash(r.checkedBy); } }, { h: 'Status', v: function (r) { return statusChip(r.status); } }
+  ], d.sources));
+  $('#uout').innerHTML = o;
+}
+function sec(title, inner) { return '<div class="card"><h3>' + esc(title) + '</h3>' + inner + '</div>'; }
+
+/* ------------------------------ PROGRAMS --------------------------------- */
+function renderProg() {
+  var f = progState.f;
+  var unis = B.universities.filter(function (u) { return !f.country || u.country === f.country; });
+  var inp = function (k, label, ph) { return '<div class="field"><label>' + label + '</label><input data-k="' + k + '" value="' + esc(f[k] || '') + '" placeholder="' + (ph || '') + '" inputmode="decimal"></div>'; };
+  var sel = function (k, label, arr, first) { return '<div class="field"><label>' + label + '</label><select data-k="' + k + '">' + opts(arr, f[k], first) + '</select></div>'; };
+  var html = '<h2>Program search</h2><form class="card" id="pf"><div class="filters">' +
+    sel('country', 'Country', B.countries.map(function (c) { return c.name; }), 'Any') +
+    sel('university', 'University', unis.map(function (u) { return u.name; }), 'Any') +
+    sel('degree', 'Degree', B.lists.DEGREE, 'Any') +
+    '<div class="field"><label>Major / field</label><input data-k="major" value="' + esc(f.major || '') + '" placeholder="e.g. computer"></div>' +
+    sel('intake', 'Intake', B.lists.INTAKE_TERM, 'Any') + sel('language', 'Instruction language', B.lists.LANG_INSTR, 'Any') +
+    inp('ielts', 'My IELTS', '6.5') + inp('toefl', 'My TOEFL iBT', '80') + inp('pte', 'My PTE', '') + inp('topik', 'My TOPIK', '') + inp('gpa', 'My GPA', '3.2') +
+    sel('currency', 'Tuition currency', B.lists.CURRENCY, 'Any') + inp('tuitionMin', 'Tuition from', '') + inp('tuitionMax', 'Tuition to', '') +
+    sel('scholarship', 'Scholarship', ['Yes', 'No'], 'Any') + sel('sort', 'Sort by', B.lists.SORT, 'Country') +
+    '</div><div style="margin-top:12px;display:flex;gap:10px"><button class="btn" id="psearch">Search</button><button type="button" class="btn ghost" id="pclear">Clear</button></div><div class="err" id="perr"></div></form><div id="pout"></div>';
+  $('#view').innerHTML = html;
+  document.querySelectorAll('#pf [data-k]').forEach(function (el) {
+    el.addEventListener('change', function () { f[el.dataset.k] = el.value; if (el.dataset.k === 'country') { f.university = ''; renderProg(); } });
+    el.addEventListener('input', function () { f[el.dataset.k] = el.value; });
+  });
+  $('#pf').addEventListener('submit', function (e) { e.preventDefault(); runProg(); });
+  $('#pclear').onclick = function () { progState.f = {}; progState.res = null; renderProg(); };
+  if (progState.res) drawProg(); else $('#pout').innerHTML = '<div class="card empty">Set filters and press Search. Leave everything empty to list all programs.</div>';
+}
+async function runProg() {
+  var b = $('#psearch'); b.disabled = true; $('#perr').textContent = '';
+  $('#pout').innerHTML = '<div class="loading">Searching…</div>';
+  try { progState.res = (await api('programs', { filters: progState.f })).data; drawProg(); }
+  catch (x) { $('#perr').textContent = x.message; $('#pout').innerHTML = ''; }
+  b.disabled = false;
+}
+function drawProg() {
+  var r = progState.res;
+  $('#pout').innerHTML = '<div class="card"><h3>' + fn(r.total) + ' program' + (r.total === 1 ? '' : 's') + ' found' + (r.truncated ? ' · showing first ' + r.rows.length : '') + '</h3>' +
+    table([
+      { h: 'University', v: function (x) { return '<b>' + esc(x.university) + '</b>' + sampleChip(x.sample) + '<div class="muted">' + esc(x.city) + ', ' + esc(x.country) + '</div>'; } },
+      { h: 'Program', v: function (x) { return esc(x.program) + (x.major && x.major !== x.program ? '<div class="muted">' + esc(x.major) + '</div>' : ''); } },
+      { h: 'Degree', v: function (x) { return dash(x.degree); } }, { h: 'Language', v: function (x) { return dash(x.language); } },
+      { h: 'Intakes', v: function (x) { return dash(x.intakes); } },
+      { h: 'Tuition', v: function (x) { return x.tuition ? esc(money(x.tuition.amount, x.tuition.currency, x.tuition.period)) : dash(''); } },
+      { h: 'Language req.', v: function (x) { return dash(x.langText); } },
+      { h: 'Min GPA', v: function (x) { return dash(blank(x.minGpa) ? '' : x.minGpa + (x.gpaScale ? ' / ' + x.gpaScale : '')); } },
+      { h: 'Schol.', v: function (x) { return x.scholarships ? '<span class="chip d-gr">' + x.scholarships + '</span>' : dash(''); } },
+      { h: 'Next deadline', v: function (x) { return x.next ? esc(fd(x.next)) : dash(''); } }
+    ], r.rows, { click: true, empty: 'No programs match these filters.' }) + '</div>';
+  document.querySelectorAll('#pout tr.click').forEach(function (tr) {
+    tr.addEventListener('click', function () {
+      var x = r.rows[+tr.dataset.i]; var u = B.universities.filter(function (q) { return q.id === x.uniId; })[0];
+      uniState = { country: u ? u.country : '', id: x.uniId, degree: '', intake: '', data: null }; go('uni');
+    });
+  });
+}
+
+/* ------------------------------ boot ------------------------------------- */
+if (TOKEN) start().catch(function () {}); else showLogin();
+</script>
+</body>
+</html>

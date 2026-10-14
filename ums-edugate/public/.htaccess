@@ -1,0 +1,19 @@
+# UMS EduGate — Apache rewrite (Phase 1)
+# Document root should point at this public/ folder so that config/,
+# database/, storage/ and app/ are not web-accessible.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Serve real files/directories as-is (CSS, JS, images)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else goes through the front controller
+  RewriteRule ^ index.php [L]
+</IfModule>
+
+# Deny access to any dotfiles served from public/
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
