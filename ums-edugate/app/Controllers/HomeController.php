@@ -7,6 +7,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../config/database.php';
+require_once BASE_PATH . '/app/Core/View.php';
 
 final class HomeController
 {
@@ -15,9 +16,10 @@ final class HomeController
         $config = Database::config();
         $dbTest = Database::testConnection();
         render_view('home/index', [
-            'title'  => $config['app']['name'] . ' — Foundation',
-            'config' => $config,
-            'dbTest' => $dbTest,
+            'title'       => $config['app']['name'] . ' — System status',
+            'breadcrumbs' => [['label' => 'Home', 'url' => '/'], ['label' => 'System status']],
+            'config'      => $config,
+            'dbTest'      => $dbTest,
         ]);
     }
 
@@ -30,6 +32,15 @@ final class HomeController
             'pdo_mysql'=> extension_loaded('pdo_mysql'),
             'database' => Database::testConnection(),
         ], JSON_PRETTY_PRINT);
+    }
+
+    /** GET /components — reusable UI component reference (Phase 3 shell demo). */
+    public function components(): void
+    {
+        render_view('components/showcase', [
+            'title'       => 'UI components — UMS EduGate',
+            'breadcrumbs' => [['label' => 'Home', 'url' => '/'], ['label' => 'UI components']],
+        ]);
     }
 
     public function notFound(): void

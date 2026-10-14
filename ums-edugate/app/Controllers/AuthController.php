@@ -87,11 +87,12 @@ final class AuthController
             }
         }
 
-        render_view('auth/dashboard', [
-            'title'          => 'Dashboard — UMS EduGate',
-            'success'        => Session::flash('success'),
-            'canManageUsers' => $canManageUsers,
-            'recentLogins'   => $recentLogins,
+        render_view('dashboard/index', [
+            'title'       => 'Dashboard — UMS EduGate',
+            'breadcrumbs' => [['label' => 'Home', 'url' => '/'], ['label' => 'Dashboard']],
+            'userName'    => Auth::name(),
+            'role'        => Auth::role(),
+            'recentLogins' => $recentLogins,
         ]);
     }
 }

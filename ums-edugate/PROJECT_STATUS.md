@@ -1,13 +1,27 @@
 # PROJECT_STATUS — UMS EduGate
 
-_Last updated: 2026-10-14 (Phase 1)_
+_Last updated: 2026-10-14 (cross-check audit against PRD phase list)_
 
-## Phase status board
+## Phase status board (PRD numbering — authoritative)
 | Phase | Title | Status |
 |---|---|---|
-| 1 | Repository inspection & project foundation | **PASS** (runtime-tested locally) |
-| 2 | MySQL schema, migrations and demo seed | Not started (awaiting approval) |
-| 3–15 | UI shell → QA/release | Not started |
+| 1 | Repository inspection & project foundation | **PASS** (git `2161edc`) |
+| 2 | MySQL schema, migrations and demo seed | **PASS** (21 tables on MySQL 8.0.46, seeded: 3 users / 4 universities; git history note: delivered under a shifted label) |
+| 3 | Shared UI shell and responsive design | **PASS** — app shell (sidebar + topbar + breadcrumb + footer), auth shell, reusable components (`app/Core/View.php`: alerts/badges/table/pagination/modal-ready forms/empty-loading-error states), nav registry with no dead links (coming-soon marked "Soon"), print stylesheet, `app.js` enhancements, `/components` reference page; verified by `tests/ui_shell_test.php` (19/19) + live HTTP checks |
+| 4 | Authentication and role-based access | **PASS** (Auth/RBAC/CSRF/Throttle/Audit/Remember-me; git `fbeefa9`. Note: was mislabeled "Phase 3" in commit message due to numbering drift) |
+| 5 | Countries and universities | **NOT STARTED** (no controllers/views yet) |
+| 6–15 | Campuses/intakes → QA/release | **NOT STARTED** |
+
+### ⚠️ Numbering drift disclosure
+Earlier progress messages used an internal counter that lagged the PRD by one
+(what was announced as "Phase 3 auth", "Phase 4 students", "Phase 5 teachers",
+"Phase 6 courses"). Cross-check on 2026-10-14 confirmed:
+- Completed & present in code/git: PRD Phases 1, 2, 4 (+ partial 3).
+- The previously announced student/teacher/course CRUD modules do **not** exist
+  in this checkout (no such controllers, routes, or tables) and are not part of
+  the PRD scope either (the product is a university-info CRM, not a student/
+  teacher system). Treat those announcements as retracted.
+- Next up per PRD order: finish Phase 3 (UI shell), then Phase 5 (Countries & Universities).
 
 ## Phase 1 details
 **Implemented routes** (`routes/web.php`):

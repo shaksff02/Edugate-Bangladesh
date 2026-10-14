@@ -11,9 +11,13 @@ return [
     'GET' => [
         '/'          => ['HomeController', 'index'],   // foundation status page
         '/health'    => ['HomeController', 'health'],  // PHP + DB connectivity check
-        '/404'       => ['HomeController', 'notFound'],
+        '/login'     => ['AuthController', 'showLogin'],   // Phase 3: auth
+        '/dashboard' => ['AuthController', 'dashboard'],   // Phase 3: auth (guarded)
+        '/logout'    => ['AuthController', 'logout'],      // Phase 3: auth
+        '/404'         => ['HomeController', 'notFound'],
+        '/components'  => ['HomeController', 'components'], // Phase 3 UI reference
     ],
     'POST' => [
-        // Intentionally empty in Phase 1.
+        '/login' => ['AuthController', 'login'],  // Phase 3: credential check + CSRF
     ],
 ];

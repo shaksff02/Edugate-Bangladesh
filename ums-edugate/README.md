@@ -10,7 +10,7 @@ no database schema yet. See `PROJECT_STATUS.md`.
 
 ## Requirements
 - PHP **8.1+** with `pdo_mysql` (verified locally on PHP 8.2.34)
-- MySQL **8.0+** or MariaDB (via XAMPP recommended)
+- MySQL **8.0+** (official Oracle MySQL Community Server — target engine; MariaDB not used)
 - Apache (XAMPP) or the PHP built-in server for development
 
 ## Quick start (XAMPP / Apache)

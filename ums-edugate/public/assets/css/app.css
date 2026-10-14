@@ -1,24 +1,69 @@
-/* UMS EduGate — global styles (Phase 1 baseline)
-   Restrained palette per PRD §4: navy/slate text, light neutrals,
-   one indigo accent. Bootstrap 5 handles components. */
+/* UMS EduGate — global styles (Phase 3: shared UI shell)
+   Restrained palette per PRD §4: navy/slate text, light neutrals, one indigo accent. */
 
 :root {
-  --umg-primary: #3b5bdb; /* indigo accent */
+  --umg-primary: #3b5bdb;
+  --umg-sidebar-w: 260px;
 }
 
-body {
-  color: #212b3b;
-}
+body { color: #212b3b; }
 
 .btn-primary {
   --bs-btn-bg: var(--umg-primary);
   --bs-btn-border-color: var(--umg-primary);
 }
-
 a { color: var(--umg-primary); }
-
 .navbar-brand { letter-spacing: .2px; }
 
+/* ---------- App shell layout ---------- */
+.umg-layout { display: flex; min-height: 100vh; }
+.umg-content-col { flex: 1 1 auto; min-width: 0; }
+
+.umg-sidebar-desktop {
+  width: var(--umg-sidebar-w);
+  flex: 0 0 var(--umg-sidebar-w);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+/* Sidebar links */
+.umg-nav .umg-nav-link {
+  display: flex;
+  align-items: center;
+  padding: .5rem .75rem;
+  margin: .05rem 0;
+  border-radius: .375rem;
+  color: #cdd5e0;
+  text-decoration: none;
+  font-size: .925rem;
+}
+.umg-nav .umg-nav-link:hover { background: rgba(255,255,255,.08); color: #fff; }
+.umg-nav .umg-nav-link.active { background: var(--umg-primary); color: #fff; }
+.umg-nav .umg-nav-link.disabled { cursor: not-allowed; opacity: .65; }
+.umg-nav .umg-nav-link.disabled:hover { background: transparent; color: inherit; }
+
+/* Topbar */
+.umg-topbar { z-index: 1020; }
+
+/* Prevent horizontal overflow on small screens (PRD acceptance) */
+main img, main table, main canvas { max-width: 100%; }
+.umg-app-shell { overflow-x: clip; }
+
+/* Focus visibility for keyboard users (PRD acceptance) */
+.form-control:focus, .form-select:focus, .btn:focus-visible,
+.umg-nav .umg-nav-link:focus-visible {
+  box-shadow: 0 0 0 .2rem rgba(59, 91, 219, .25);
+}
+
+/* ---------- Print stylesheet (PRD Phase 3) ---------- */
 @media print {
-  nav, footer { display: none !important; }
+  .umg-sidebar-desktop, .umg-topbar, .umg-footer,
+  .offcanvas, .btn, form[method="post"], .no-print { display: none !important; }
+  .umg-layout { display: block; }
+  main { padding: 0 !important; }
+  body { color: #000; background: #fff; }
+  a::after { content: " (" attr(href) ")"; font-size: .8em; color: #444; }
+  .table { font-size: .85rem; }
+  .card, .table-responsive { box-shadow: none !important; border-color: #ccc !important; }
 }
