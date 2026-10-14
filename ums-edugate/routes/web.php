@@ -14,7 +14,8 @@ return [
         '/login'     => ['AuthController', 'showLogin'],   // Phase 3: auth
         '/dashboard' => ['AuthController', 'dashboard'],   // Phase 3: auth (guarded)
         '/logout'    => ['AuthController', 'logout'],      // Phase 3: auth
-        '/404'       => ['HomeController', 'notFound'],
+        '/404'         => ['HomeController', 'notFound'],
+        '/components'  => ['HomeController', 'components'], // Phase 3 UI reference
     ],
     'POST' => [
         '/login' => ['AuthController', 'login'],  // Phase 3: credential check + CSRF

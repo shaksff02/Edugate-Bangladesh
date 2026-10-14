@@ -54,6 +54,18 @@ final class Session
         return $val;
     }
 
+    /** Peek at all pending flash messages without clearing them. */
+    public static function peekFlashes(): array
+    {
+        return $_SESSION['_flash'] ?? [];
+    }
+
+    /** Clear all pending flash messages (called once after rendering). */
+    public static function clearFlashes(): void
+    {
+        unset($_SESSION['_flash']);
+    }
+
     public static function destroy(): void
     {
         if (self::$started && session_status() === PHP_SESSION_ACTIVE) {
