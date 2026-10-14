@@ -52,7 +52,7 @@ final class IntakeController
             'universityId' => $univId,
             'year'         => $year,
             'universities' => $this->repo->activeUniversities(),
-            'canEdit'      => Auth::can(Auth::role(), 'create'),
+            'canEdit'      => Rbac::can(Auth::role(), 'create'),
         ]);
     }
 
@@ -101,7 +101,7 @@ final class IntakeController
                 ['label' => 'Intakes', 'url' => '/intakes'],
                 ['label' => trim((string) $intake['name'] . ' ' . (string) $intake['intake_year'])],
             ],
-            'canEdit'     => Auth::can(Auth::role(), 'create'),
+            'canEdit'     => Rbac::can(Auth::role(), 'create'),
         ]);
     }
 

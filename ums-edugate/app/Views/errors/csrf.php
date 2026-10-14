@@ -10,5 +10,5 @@
 <div class="d-flex flex-column align-items-center justify-content-center" style="min-height:60vh">
     <h1 class="h3 mb-2">Session expired</h1>
     <p class="text-muted mb-4">Your form session timed out or the security check failed. Please try again.</p>
-    <a class="btn btn-primary" href="<?= BASE_URL ?>/login">Back to login</a>
+    <a class="btn btn-primary" href="/login">Back to login</a>
 </div>

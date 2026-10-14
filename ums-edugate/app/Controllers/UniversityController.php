@@ -52,7 +52,7 @@ final class UniversityController
             'countryId'  => $countryId,
             'type'       => $type,
             'countries'  => $this->repo->activeCountries(),
-            'canEdit'    => Auth::can(Auth::role(), 'create'),
+            'canEdit'    => Rbac::can(Auth::role(), 'create'),
         ]);
     }
 
@@ -110,7 +110,7 @@ final class UniversityController
                 ['label' => 'Universities', 'url' => '/universities'],
                 ['label' => (string) $uni['name']],
             ],
-            'canEdit'    => Auth::can(Auth::role(), 'create'),
+            'canEdit'    => Rbac::can(Auth::role(), 'create'),
         ]);
     }
 

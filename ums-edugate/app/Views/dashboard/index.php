@@ -7,7 +7,7 @@
       ['Countries', 'globe-americas'],
       ['Students', 'people'],
       ['Applications', 'card-listing'],
-  ] as [$label, $icon]: ?>
+  ] as [$label, $icon]): ?>
     <div class="col-6 col-lg-3">
       <div class="card shadow-sm h-100">
         <div class="card-body">

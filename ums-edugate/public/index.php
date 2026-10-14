@@ -23,6 +23,7 @@ require_once BASE_PATH . '/app/Controllers/UniversityController.php';// Phase 5
 require_once BASE_PATH . '/app/Controllers/CampusController.php';    // Phase 6
 require_once BASE_PATH . '/app/Controllers/IntakeController.php';    // Phase 6
 require_once BASE_PATH . '/app/Controllers/RoundController.php';     // Phase 6
+require_once BASE_PATH . '/app/Controllers/ProgramController.php';   // Phase 7
 
 $config = Database::config();
 date_default_timezone_set($config['app']['timezone'] ?? 'UTC');
@@ -44,13 +45,14 @@ $routes = require BASE_PATH . '/routes/web.php';
 
 $handler = $routes[$method][$path] ?? null;
 
-// Phase 5/6: parameterised module routes — /{module}/{id}[/{action}]
-if ($handler === null && preg_match('#^/(countries|universities|campuses|intakes|rounds)/(\d+)(?:/([a-z]+))?$#', $path, $m)) {
+// Phase 5/6/7: parameterised module routes — /{module}/{id}[/{action}]
+if ($handler === null && preg_match('#^/(countries|universities|campuses|intakes|rounds|programs)/(\d+)(?:/([a-z]+))?$#', $path, $m)) {
     $class = match ($m[1]) {
         'countries'    => 'CountryController',
         'universities' => 'UniversityController',
         'campuses'     => 'CampusController',
         'intakes'      => 'IntakeController',
+        'programs'     => 'ProgramController',
         default        => 'RoundController',
     };
     $map = [

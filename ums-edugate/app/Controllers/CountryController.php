@@ -47,7 +47,7 @@ final class CountryController
             'per'      => $list['per'],
             'search'   => $search,
             'status'   => $status,
-            'canEdit'  => Auth::can(Auth::role(), 'create'),
+            'canEdit'  => Rbac::can(Auth::role(), 'create'),
         ]);
     }
 
@@ -114,7 +114,7 @@ final class CountryController
                 ['label' => 'Countries', 'url' => '/countries'],
                 ['label' => (string) $country['name']],
             ],
-            'canEdit'  => Auth::can(Auth::role(), 'create'),
+            'canEdit'  => Rbac::can(Auth::role(), 'create'),
         ]);
     }
 
