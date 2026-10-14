@@ -11,12 +11,15 @@ function e(?string $value): string
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 
-function render_view(string $template, array $data = []): void
+function render_view(string $template, array $data = [], int $status = 200): void
 {
     extract($data, EXTR_SKIP);
     $viewFile = __DIR__ . '/../' . $template . '.php';
     if (!is_readable($viewFile)) {
         throw new RuntimeException("View not found: {$template}");
+    }
+    if ($status !== 200 && !headers_sent()) {
+        http_response_code($status);
     }
     ob_start();
     require $viewFile;
