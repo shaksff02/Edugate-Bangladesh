@@ -36,6 +36,12 @@ final class Validator
         return $this->data;
     }
 
+    /** Attach an error from outside the class (e.g. referential checks in controllers). */
+    public function addError(string $key, string $message): void
+    {
+        $this->fail($key, $message);
+    }
+
     /** Raw trimmed string for a key ('' when absent/null). Never null. */
     private function raw(string $key): string
     {
@@ -183,5 +189,92 @@ final class Validator
         }
         $this->data[$key] = (int) $v;
         return $this;
+    }
+
+    /** Calendar date Y-m-d (HTML5 input format). Empty -> null unless required. */
+    public function date(string $key, string $label, bool $requiredField = false): self
+    {
+        $v = $this->raw($key);
+        if ($v === '') {
+            if ($requiredField) {
+                $this->fail($key, "{$label} is required.");
+            } else {
+                $this->data[$key] = null;
+            }
+            return $this;
+        }
+        if (!$this->isDate($v)) {
+            $this->fail($key, "{$label} must be a valid calendar date (YYYY-MM-DD).");
+            return $this;
+        }
+        $this->data[$key] = $v;
+        return $this;
+    }
+
+    /** Date-time as "Y-m-d\TH:i" from datetime-local inputs; stored as "Y-m-d H:i:s". */
+    public function dateTime(string $key, string $label, bool $requiredField = false): self
+    {
+        $v = $this->raw($key);
+        if ($v === '') {
+            if ($requiredField) {
+                $this->fail($key, "{$label} is required.");
+            } else {
+                $this->data[$key] = null;
+            }
+            return $this;
+        }
+        $norm = str_replace('T', ' ', $v);
+        if (preg_match('/^(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})(:\d{2})?$/', $norm, $m)) {
+            $norm = $m[1] . ' ' . $m[2] . ($m[3] ?? ':00');
+        }
+        $dt = DateTime::createFromFormat('Y-m-d H:i:s', $norm);
+        if ($dt === false || $dt->format('Y-m-d H:i:s') !== $norm) {
+            $this->fail($key, "{$label} must be a valid date and time.");
+            return $this;
+        }
+        $this->data[$key] = $norm;
+        return $this;
+    }
+
+    /** Small positive integer (e.g. year). Empty -> null unless required. */
+    public function intInRange(string $key, string $label, int $min, int $max, bool $requiredField = false): self
+    {
+        $v = $this->raw($key);
+        if ($v === '') {
+            if ($requiredField) {
+                $this->fail($key, "{$label} is required.");
+            } else {
+                $this->data[$key] = null;
+            }
+            return $this;
+        }
+        if (!preg_match('/^\d+$/', $v)) {
+            $this->fail($key, "{$label} must be a whole number.");
+            return $this;
+        }
+        $n = (int) $v;
+        if ($n < $min || $n > $max) {
+            $this->fail($key, "{$label} must be between {$min} and {$max}.");
+            return $this;
+        }
+        $this->data[$key] = $n;
+        return $this;
+    }
+
+    /** Checkbox-style boolean: presence of "1"/"on" -> 1, otherwise 0. */
+    public function checkboxBool(string $key): self
+    {
+        $v = strtolower($this->raw($key));
+        $this->data[$key] = in_array($v, ['1', 'on', 'true'], true) ? 1 : 0;
+        return $this;
+    }
+
+    /** Strict calendar-date check (no rollover like 2024-02-31). */
+    private function isDate(string $v): bool
+    {
+        if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $v, $m)) {
+            return false;
+        }
+        return checkdate((int) $m[2], (int) $m[3], (int) $m[1]);
     }
 }
