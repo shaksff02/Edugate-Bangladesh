@@ -31,6 +31,11 @@ $getRoutes = static function () use ($crud): array {
     ];
     foreach ($crud('countries', 'CountryController') as $k => $v) { $routes[$k] = $v; }
     foreach ($crud('universities', 'UniversityController') as $k => $v) { $routes[$k] = $v; }
+    // Phase 6: campuses, intakes & application rounds
+    foreach ($crud('campuses', 'CampusController') as $k => $v) { $routes[$k] = $v; }
+    foreach ($crud('intakes', 'IntakeController') as $k => $v) { $routes[$k] = $v; }
+    foreach ($crud('rounds', 'RoundController') as $k => $v) { $routes[$k] = $v; }
+    $routes['/rounds/deadlines'] = ['RoundController', 'deadlines'];
     return $routes;
 };
 
