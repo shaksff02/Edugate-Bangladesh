@@ -1,0 +1,24 @@
+/* UMS EduGate — global styles (Phase 1 baseline)
+   Restrained palette per PRD §4: navy/slate text, light neutrals,
+   one indigo accent. Bootstrap 5 handles components. */
+
+:root {
+  --umg-primary: #3b5bdb; /* indigo accent */
+}
+
+body {
+  color: #212b3b;
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--umg-primary);
+  --bs-btn-border-color: var(--umg-primary);
+}
+
+a { color: var(--umg-primary); }
+
+.navbar-brand { letter-spacing: .2px; }
+
+@media print {
+  nav, footer { display: none !important; }
+}
