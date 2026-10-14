@@ -1084,16 +1084,3 @@ Copy this prompt into the coding AI together with the project files:
 > At the end of the phase, provide the required status report and exact manual test steps. Stop and wait for my approval.
 
 ---
-
-# 16. How to use this PRD effectively
-
-1. Give the AI this PRD and the original ZIP/workbook as context.
-2. Ask it to execute Phase 1 only.
-3. Review the files and run the stated tests.
-4. If a test fails, ask the AI to fix that phase only.
-5. Approve the phase explicitly before moving on.
-6. Keep a backup or version-control commit after every accepted phase.
-7. Never ask “build everything now”; that increases the risk of missing modules, invented assumptions and untested code.
-8. At every phase, ask the AI to list remaining work against the PRD so no requirement disappears from context.
-
-**Important:** The PRD is a build specification, not proof that the finished website has been implemented or tested. The coding AI must still create the files, run the application and provide actual test evidence.
