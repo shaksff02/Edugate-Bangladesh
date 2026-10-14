@@ -30,8 +30,8 @@ final class View
                 ['label' => 'System status','url' => '/',          'state' => 'ready',       'icon' => 'activity'],
             ],
             'Reference data' => [
-                ['label' => 'Countries',      'url' => '/countries',   'state' => 'coming_soon', 'icon' => 'globe-americas'],
-                ['label' => 'Universities',   'url' => '/universities','state' => 'coming_soon', 'icon' => 'building'],
+                ['label' => 'Countries',      'url' => '/countries',   'state' => 'ready', 'icon' => 'globe-americas'],
+                ['label' => 'Universities',   'url' => '/universities','state' => 'ready', 'icon' => 'building'],
                 ['label' => 'Programmes',     'url' => '/programmes',  'state' => 'coming_soon', 'icon' => 'mortarboard'],
             ],
             'Operations' => [
@@ -222,11 +222,16 @@ final class View
         $errHtml   = $invalid ? '<div class="invalid-feedback d-block">' . e($f['error']) . '</div>' : '';
         $help      = !empty($f['help']) ? '<div class="form-text">' . e($f['help']) . '</div>' : '';
         $ac        = in_array($type, ['password'], true) ? ' autocomplete="current-password"' : ' autocomplete="off"';
+        $isTextarea = $type === 'textarea';
+        $control   = $isTextarea
+            ? '<textarea class="form-control' . ($invalid ? ' is-invalid' : '') . '" id="' . $id . '" name="' . $id . '"'
+              . $required . (isset($f['rows']) ? ' rows="' . (int) $f['rows'] . '"' : ' rows="4"') . $ph . '>' . $value . '</textarea>'
+            : '<input type="' . e($type) . '" class="form-control' . ($invalid ? ' is-invalid' : '') . '" id="' . $id . '" name="' . $id . '"'
+              . ' value="' . $value . '"' . $required . $maxlen . $ph . $ac . '>';
 
         return '<div class="mb-3">'
              . '<label class="form-label" for="' . $id . '">' . e($f['label']) . ($required ? ' <span class="text-danger">*</span>' : '') . '</label>'
-             . '<input type="' . e($type) . '" class="form-control' . ($invalid ? ' is-invalid' : '') . '" id="' . $id . '" name="' . $id . '"'
-             . ' value="' . $value . '"' . $required . $maxlen . $ph . $ac . '>'
+             . $control
              . $errHtml . $help . '</div>';
     }
 

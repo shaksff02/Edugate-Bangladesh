@@ -18,6 +18,8 @@ require_once BASE_PATH . '/config/database.php';
 require_once BASE_PATH . '/app/Views/layouts/main.php'; // view renderer + e()
 require_once BASE_PATH . '/app/Controllers/HomeController.php';
 require_once BASE_PATH . '/app/Controllers/AuthController.php';
+require_once BASE_PATH . '/app/Controllers/CountryController.php';   // Phase 5
+require_once BASE_PATH . '/app/Controllers/UniversityController.php';// Phase 5
 
 $config = Database::config();
 date_default_timezone_set($config['app']['timezone'] ?? 'UTC');
@@ -38,6 +40,24 @@ if ($path !== '/' && is_file(BASE_PATH . '/public' . $path)) {
 $routes = require BASE_PATH . '/routes/web.php';
 
 $handler = $routes[$method][$path] ?? null;
+
+// Phase 5: parameterised module routes — /{module}/{id}[/{action}]
+if ($handler === null && preg_match('#^/(countries|universities)/(\d+)(?:/([a-z]+))?$#', $path, $m)) {
+    $class = $m[1] === 'countries' ? 'CountryController' : 'UniversityController';
+    $map = [
+        ['GET',  '',       'show'],
+        ['GET',  'edit',   'edit'],
+        ['POST', 'update', 'update'],
+        ['POST', 'archive','archive'],
+        ['POST', 'restore','restore'],
+    ];
+    foreach ($map as [$rm, $ra, $act]) {
+        if ($method === $rm && $ra === ($m[3] ?? '')) {
+            $handler = [$class, $act];
+            break;
+        }
+    }
+}
 
 // PRD: unsupported routes must return a deliberate 404/403, never a blank page.
 if ($handler === null) {

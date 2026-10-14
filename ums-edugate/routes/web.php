@@ -1,23 +1,45 @@
 <?php
 /**
- * UMS EduGate — routes (Phase 1)
+ * UMS EduGate — routes
  *
- * Minimal front-controller route table. Business routes are added
- * module-by-module in later phases; anything unmatched returns a
- * deliberate 404 page (never a blank page).
+ * Front-controller route table. Business routes are added module-by-module
+ * in later phases; anything unmatched returns a deliberate 404 page
+ * (never a blank page).
+ *
+ * NOTE: the front controller resolves handlers by exact "METHOD path" key.
+ * Parameterised pages ({id}, {id}/action) are listed explicitly so unknown
+ * ids still reach a controller that renders a proper 404 view.
  */
 
+$crud = static function (string $module, string $class): array {
+    return [
+        '/' . $module              => [$class, 'index'],
+        '/' . $module . '/create'  => [$class, 'create'],
+        '/' . $module . '/store'   => [$class, 'store'],
+    ];
+};
+
+$getRoutes = static function () use ($crud): array {
+    $routes = [
+        '/'          => ['HomeController', 'index'],    // foundation status page
+        '/health'    => ['HomeController', 'health'],   // PHP + DB connectivity check
+        '/login'     => ['AuthController', 'showLogin'],
+        '/dashboard' => ['AuthController', 'dashboard'],
+        '/logout'    => ['AuthController', 'logout'],
+        '/404'       => ['HomeController', 'notFound'],
+        '/components'=> ['HomeController', 'components'], // UI reference (Phase 3)
+    ];
+    foreach ($crud('countries', 'CountryController') as $k => $v) { $routes[$k] = $v; }
+    foreach ($crud('universities', 'UniversityController') as $k => $v) { $routes[$k] = $v; }
+    return $routes;
+};
+
+$postRoutes = static function (): array {
+    $routes = ['/login' => ['AuthController', 'login']];
+    return $routes;
+};
+
 return [
-    'GET' => [
-        '/'          => ['HomeController', 'index'],   // foundation status page
-        '/health'    => ['HomeController', 'health'],  // PHP + DB connectivity check
-        '/login'     => ['AuthController', 'showLogin'],   // Phase 3: auth
-        '/dashboard' => ['AuthController', 'dashboard'],   // Phase 3: auth (guarded)
-        '/logout'    => ['AuthController', 'logout'],      // Phase 3: auth
-        '/404'         => ['HomeController', 'notFound'],
-        '/components'  => ['HomeController', 'components'], // Phase 3 UI reference
-    ],
-    'POST' => [
-        '/login' => ['AuthController', 'login'],  // Phase 3: credential check + CSRF
-    ],
+    'GET'  => $getRoutes(),
+    'POST' => $postRoutes(),
 ];
