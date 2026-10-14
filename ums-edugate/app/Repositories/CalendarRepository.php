@@ -147,7 +147,7 @@ final class CalendarRepository
     {
         $st = $this->pdo->prepare(
             'INSERT INTO campuses (university_id, name, city, address, is_main, confidence_level, created_by, updated_by)
-             VALUES (:university_id, :name, :city, :address, :is_main, :confidence_level, :au, :au)'
+             VALUES (:university_id, :name, :city, :address, :is_main, :confidence_level, :au, :au2)'
         );
         $this->bind($st, $d, ['university_id', 'name', 'city', 'address', 'is_main', 'confidence_level']);
         $st->execute();
@@ -232,7 +232,7 @@ final class CalendarRepository
     {
         $st = $this->pdo->prepare(
             'INSERT INTO intakes (university_id, name, intake_year, starts_on, ends_on, confidence_level, created_by, updated_by)
-             VALUES (:university_id, :name, :intake_year, :starts_on, :ends_on, :confidence_level, :au, :au)'
+             VALUES (:university_id, :name, :intake_year, :starts_on, :ends_on, :confidence_level, :au, :au2)'
         );
         $this->bind($st, $d, ['university_id', 'name', 'intake_year', 'starts_on', 'ends_on', 'confidence_level']);
         $st->execute();
@@ -328,7 +328,7 @@ final class CalendarRepository
     {
         $st = $this->pdo->prepare(
             'INSERT INTO application_rounds (intake_id, name, opens_at, closes_at, result_date, confidence_level, created_by, updated_by)
-             VALUES (:intake_id, :name, :opens_at, :closes_at, :result_date, :confidence_level, :au, :au)'
+             VALUES (:intake_id, :name, :opens_at, :closes_at, :result_date, :confidence_level, :au, :au2)'
         );
         $this->bind($st, $d, ['intake_id', 'name', 'opens_at', 'closes_at', 'result_date', 'confidence_level']);
         $st->execute();
@@ -414,6 +414,10 @@ final class CalendarRepository
             $st->bindValue(':' . $k, $v, is_int($v) ? PDO::PARAM_INT : PDO::PARAM_STR);
         }
         $st->bindValue(':au', Auth::id());
+        // :au2 only appears in INSERT statements (created_by + updated_by).
+        if (stripos($st->queryString, ':au2') !== false) {
+            $st->bindValue(':au2', Auth::id());
+        }
     }
 
     private function archive(string $table, int $id): void

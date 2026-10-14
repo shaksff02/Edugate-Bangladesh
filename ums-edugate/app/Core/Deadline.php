@@ -34,7 +34,9 @@ final class Deadline
             return self::unknown(); // malformed stored value -> unknown, never guess
         }
 
-        $diffDays = $now->diff($closing)->days * ($closing < $now ? -1 : 1);
+        $diffSeconds = $closing->getTimestamp() - $now->getTimestamp();
+        $days = intdiv(abs($diffSeconds), 86400);
+        $diffDays = $diffSeconds < 0 ? -$days : $days;
 
         if ($closing < $now) {
             return [

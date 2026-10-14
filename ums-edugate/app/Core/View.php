@@ -32,6 +32,9 @@ final class View
             'Reference data' => [
                 ['label' => 'Countries',      'url' => '/countries',   'state' => 'ready', 'icon' => 'globe-americas'],
                 ['label' => 'Universities',   'url' => '/universities','state' => 'ready', 'icon' => 'building'],
+                ['label' => 'Campuses',       'url' => '/campuses',    'state' => 'ready', 'icon' => 'geo-alt'],
+                ['label' => 'Intakes',        'url' => '/intakes',     'state' => 'ready', 'icon' => 'calendar3'],
+                ['label' => 'Rounds',         'url' => '/rounds',      'state' => 'ready', 'icon' => 'hourglass-split'],
                 ['label' => 'Programmes',     'url' => '/programmes',  'state' => 'coming_soon', 'icon' => 'mortarboard'],
             ],
             'Operations' => [
